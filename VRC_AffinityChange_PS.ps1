@@ -37,6 +37,7 @@ $MASK = 0xFFF
 
 $save_process_id = -1
 $isAlreadyRuning = $false
+$debugmode = $false
 function timer_function()
 {
     $process
@@ -49,7 +50,10 @@ function timer_function()
     {
         #プロセスが存在しない場合
         $script:isAlreadyRuning = $false
-        Write-Host "Process not found"
+        if ($debugmode -eq $true)
+        {
+            Write-Host "Process not found"
+        }
         return
     }
     if ($null -ne $process)
@@ -59,13 +63,16 @@ function timer_function()
         {
             #プロセスIDが変更された場合は再度スレッド割当を変更する
             $script:isAlreadyRuning = $false
-            Write-Host "Process id change"
+            if ($debugmode -eq $true)
+            {
+                Write-Host "Process id change"
+            }
         }
 
         if ($isAlreadyRuning -eq $false)
         {
             #VRChatが起動したらスレッド割当を変更する
-            Write-Host "Process start"
+            Write-Host "Process start!"
             $script:isAlreadyRuning = $true
             $script:save_process_id = $process.id
             try
@@ -82,11 +89,14 @@ function timer_function()
         else
         {
             #既に変更済みの場合は何もしない
-            Write-Host "Process already start"
+            if ($debugmode -eq $true)
+            {
+                Write-Host "Process already start"
+            }
         }
     }
 }
-
+Write-Host "Process Scan Start"
 #定期実装
 while ($True)
 {
